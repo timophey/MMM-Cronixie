@@ -9,7 +9,9 @@ Module.register("MMM-Cronixie", {
 	defaults: {
 		width: "90vw",
 		orientation: "landscape", // landscape | not!portrait
+		reroll: 1
 	},
+	values: [0,0,0,0,0,0],
 	start: function () {
 		Log.info("Starting module: " + this.name);
 		if(this.config.width == this.defaults.width && this.config.orientation == "portrait"){
@@ -23,21 +25,62 @@ Module.register("MMM-Cronixie", {
 		self.now.hour = moment().hour();
 		Log.info(self);
 
+		/*
+		 * Timer
+		 * */
 		var notificationTimer = function(){
-			//self.updateDom();
-			/*
-			self.now.second = moment().second();
-			self.now.minute = moment().minute();
-			self.now.hour = moment().hour();*/
 			var data = this.getTemplateData();
 			for(var i in data.ds){
-				document.querySelector("#"+this.identifier+" .nixie"+i).dataset.d = data.ds[i];
+				this.values[i] = data.ds[i];
+				//document.querySelector("#"+this.identifier+" .nixie"+i).dataset.d = data.ds[i];
 			}
 			console.log("self.updateDom");
 		}
-		setInterval(notificationTimer.bind(this), 500);
-	},
+		/*
+		 * Frame
+		 * */
+		var renderFrame = function(){
+			//if(this.config.reroll > 1) this.nixieRollChain();
+			var $nixie3 = this.getNixie(3);
+			for(var i=0; i<6; i++){
+				var $nixie = this.getNixie(i);
+				if($nixie.dataset.d != this.values[i]){
+					if(i==5 && $nixie3.dataset.d == this.values[3]){this.nixieSet(i,this.values[i]); /* do not roll seconds each time */ continue;}
+					//$nixie.dataset.d = this.values[i];
+					if(this.config.reroll != 1) this.nixieSet(i,this.values[i]);
+					if(this.config.reroll == 1) this.nixieRoll(i,this.values[i]);
+					}
+				}
+			}
 
+		setInterval(notificationTimer.bind(this), 500);
+		setInterval(renderFrame.bind(this), 50);
+	},
+	nixieSet: function(i,v){
+		this.getNixie(i).dataset.d = v;
+		},
+	nixieRoll: function(i,v){
+			var $nixie = this.getNixie(i);
+			var $nixieDisplayValue = parseInt($nixie.dataset.d);
+			var goTo = $nixieDisplayValue - 1; if(goTo < 0) goTo = 9;
+			this.nixieSet(i,goTo);
+			//$nixie.dataset.d = goTo;
+			//if($nixie.dataset.d == v) return;
+			},
+	nixieRollChain: function(){
+		var nixieRollLocal = this.nixieRoll.bind(this);
+		var $nixie3 = this.getNixie(3);
+		for(var i=0; i<6; i++){
+			var $nixie = this.getNixie(i);
+			if($nixie.dataset.d != this.values[i]){
+				var $nixie = this.getNixie(i);
+				this.nixieSet(i,this.values[i]);
+				}
+			}
+		},
+	getNixie(i){
+		return document.querySelector("#"+this.identifier+" .nixie"+i);
+		},
 	getTemplate: function () {
 		return "MMM-Cronixie.njk";
 	},

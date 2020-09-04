@@ -30,6 +30,7 @@ modules: [
     config:{
         width: "80vw",
         orientation: "landscape",
+        reroll: 1
     }
   }
 ]
@@ -40,6 +41,7 @@ Config       | Possible values            | Default value | Description
 :------------|:---------------------------|:--------------|:------------
 `width`      | `80vh` `500px` `20em`      | `90vw`        | Width in CSS units
 `orientation`| `landscape` or  `portrait` | `landscape`   | Array or vertical tower view
+`reroll: 1`  | `0`-`1`                    | `1`           | Reroll option
 
 ## Todo
 
