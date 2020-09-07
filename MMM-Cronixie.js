@@ -1,8 +1,7 @@
 /* Magic Mirror
- * Module: HelloWorld
+ * Module: MMM-Cronixie
  *
- * By Michael Teeuw https://michaelteeuw.nl
- * MIT Licensed.
+ * By Timophey Lanevich https://cronixie.ru
  */
 Module.register("MMM-Cronixie", {
 	// Default module config.
@@ -10,7 +9,8 @@ Module.register("MMM-Cronixie", {
 		width: "90vw",
 		orientation: "landscape", // landscape | not!portrait
 		reroll: 1,
-		functions: [1,1,1,1,1,0]
+		rerollDelay: 255,
+		functions: [1,1,1,1,1,0],
 	},
 	values:   [0,0,0,0,0,0], // Current values
 	valuesTo: [0,0,0,0,0,0], // Current valuesTo
@@ -23,13 +23,8 @@ Module.register("MMM-Cronixie", {
 			this.config.width = "calc(90vh * 0.5 / 1.3)";
 		}
 		// Schedule update interval.
-		var self = this;
-		self.now = {};
-		self.now.second = moment().second();
-		self.now.minute = moment().minute();
-		self.now.hour = moment().hour();
 		this.valuesFx = this.config.functions;
-		Log.info(self);
+		Log.info(this);
 
 		/*
 		 * Timer
@@ -42,13 +37,13 @@ Module.register("MMM-Cronixie", {
 		var notificationTimer = function(){
 			var data = this.getTemplateData();
 			// reroll 2
-			if(this.config.reroll == 2 && data.ds[3] != this.valuesTo[3]){
+			if(this.config.reroll == 2 && data.ds[3] != this.valuesTo[3] && this.valuesLk[3]==0){
 				Log.info('reroll 2');
 				for(var j=0; j<3; j++){
 					for(var k=0; k<2; k++){
 						var i = k + j*2;
 						if(this.valuesPr[i] || this.valuesLk[i]) continue;
-						var timeout = 255 * (1-k);
+						var timeout = this.config.rerollDelay * (1-k);
 						this.valuesLk[i]=1;
 						setTimeout(setValueToRoll.bind(this),timeout,i,data);
 						}
@@ -56,12 +51,12 @@ Module.register("MMM-Cronixie", {
 				return;
 				}
 			// reroll 1
-			if(this.config.reroll == 1 && data.ds[3] != this.valuesTo[3]){
+			if(this.config.reroll == 1 && data.ds[3] != this.valuesTo[3] && this.valuesLk[3]==0){
 				Log.info('reroll 1');
 				for(var i in data.ds){
 					if(this.valuesPr[i] || this.valuesLk[i]) continue;
 					if(this.valuesPr[i]) continue;
-					var timeout = 255 * (5-i);
+					var timeout = this.config.rerollDelay * (5-i);
 					this.valuesLk[i]=1;
 					setTimeout(setValueToRoll.bind(this),timeout,i,data);
 					}
