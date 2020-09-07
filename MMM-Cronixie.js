@@ -9,9 +9,14 @@ Module.register("MMM-Cronixie", {
 	defaults: {
 		width: "90vw",
 		orientation: "landscape", // landscape | not!portrait
-		reroll: 1
+		reroll: 1,
+		functions: [1,1,1,1,1,0]
 	},
-	values: [0,0,0,0,0,0],
+	values:   [0,0,0,0,0,0], // Current values
+	valuesTo: [0,0,0,0,0,0], // Current valuesTo
+	valuesFx: [0,0,0,0,0,0], // Function
+	valuesPr: [0,0,0,0,0,0], // FunctionProcess
+	valuesLk: [0,0,0,0,0,0], // Values locked
 	start: function () {
 		Log.info("Starting module: " + this.name);
 		if(this.config.width == this.defaults.width && this.config.orientation == "portrait"){
@@ -23,34 +28,66 @@ Module.register("MMM-Cronixie", {
 		self.now.second = moment().second();
 		self.now.minute = moment().minute();
 		self.now.hour = moment().hour();
+		this.valuesFx = this.config.functions;
 		Log.info(self);
 
 		/*
 		 * Timer
 		 * */
+		var setValueToRoll = function(i,data){
+			this.valuesTo[i] = data.ds[i];
+			this.valuesPr[i] = 1;
+			this.valuesLk[i] = 0;
+			}
 		var notificationTimer = function(){
 			var data = this.getTemplateData();
+			// reroll 2
+			if(this.config.reroll == 2 && data.ds[3] != this.valuesTo[3]){
+				Log.info('reroll 2');
+				for(var j=0; j<3; j++){
+					for(var k=0; k<2; k++){
+						var i = k + j*2;
+						if(this.valuesPr[i] || this.valuesLk[i]) continue;
+						var timeout = 255 * (1-k);
+						this.valuesLk[i]=1;
+						setTimeout(setValueToRoll.bind(this),timeout,i,data);
+						}
+					}
+				return;
+				}
+			// reroll 1
+			if(this.config.reroll == 1 && data.ds[3] != this.valuesTo[3]){
+				Log.info('reroll 1');
+				for(var i in data.ds){
+					if(this.valuesPr[i] || this.valuesLk[i]) continue;
+					if(this.valuesPr[i]) continue;
+					var timeout = 255 * (5-i);
+					this.valuesLk[i]=1;
+					setTimeout(setValueToRoll.bind(this),timeout,i,data);
+					}
+				return;
+				}
+			// reroll off
 			for(var i in data.ds){
-				this.values[i] = data.ds[i];
-				//document.querySelector("#"+this.identifier+" .nixie"+i).dataset.d = data.ds[i];
+				if(this.valuesTo[i] == data.ds[i]) continue;
+				if(this.valuesPr[i] || this.valuesLk[i]) continue;
+				this.valuesPr[i] = this.valuesFx[i];
+				this.valuesTo[i] = data.ds[i];
 			}
-			console.log("self.updateDom");
+			//Log.info("self.updateDom");
 		}
 		/*
 		 * Frame
 		 * */
 		var renderFrame = function(){
-			//if(this.config.reroll > 1) this.nixieRollChain();
-			var $nixie3 = this.getNixie(3);
 			for(var i=0; i<6; i++){
-				var $nixie = this.getNixie(i);
-				if($nixie.dataset.d != this.values[i]){
-					if(i==5 && $nixie3.dataset.d == this.values[3]){this.nixieSet(i,this.values[i]); /* do not roll seconds each time */ continue;}
-					//$nixie.dataset.d = this.values[i];
-					if(this.config.reroll != 1) this.nixieSet(i,this.values[i]);
-					if(this.config.reroll == 1) this.nixieRoll(i,this.values[i]);
+				//if(this.valuesTo[i] != this.values[i]){
+					switch(this.valuesPr[i]){
+						case 0: this.nixieSet(i,this.valuesTo[i]); break;
+						case 1: this.nixieRoll(i); break;
+						}
 					}
-				}
+				//}
 			}
 
 		setInterval(notificationTimer.bind(this), 500);
@@ -58,25 +95,12 @@ Module.register("MMM-Cronixie", {
 	},
 	nixieSet: function(i,v){
 		this.getNixie(i).dataset.d = v;
+		this.values[i] = v;
+		if(this.values[i] == this.valuesTo[i]) this.valuesPr[i]=0;
 		},
 	nixieRoll: function(i,v){
-			var $nixie = this.getNixie(i);
-			var $nixieDisplayValue = parseInt($nixie.dataset.d);
-			var goTo = $nixieDisplayValue - 1; if(goTo < 0) goTo = 9;
-			this.nixieSet(i,goTo);
-			//$nixie.dataset.d = goTo;
-			//if($nixie.dataset.d == v) return;
-			},
-	nixieRollChain: function(){
-		var nixieRollLocal = this.nixieRoll.bind(this);
-		var $nixie3 = this.getNixie(3);
-		for(var i=0; i<6; i++){
-			var $nixie = this.getNixie(i);
-			if($nixie.dataset.d != this.values[i]){
-				var $nixie = this.getNixie(i);
-				this.nixieSet(i,this.values[i]);
-				}
-			}
+		var goTo = this.values[i] - 1; if(goTo < 0) goTo = 9;
+		this.nixieSet(i,goTo);
 		},
 	getNixie(i){
 		return document.querySelector("#"+this.identifier+" .nixie"+i);
