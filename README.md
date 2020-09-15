@@ -5,6 +5,9 @@ The `MMM-Cronixie` module is yet another clock for the [MagicMirror²](https://g
 This is a simple demo scene of [Cronixie](https://vk.com/cronixie) project.
 
 ![](pic/preview_landscape.png)
+![](pic/preview_landscape_v2.png)
+![](pic/preview_portrait.png)
+![](pic/preview_portrait_v2.png)
 
 ## Installation
 
@@ -30,7 +33,8 @@ modules: [
     config:{
         width: "80vw",
         orientation: "landscape",
-        reroll: 1
+        reroll: 2,
+        ver: 2,
     }
   }
 ]
@@ -44,9 +48,10 @@ Config       | Possible values            | Default value | Description
 `reroll`     | `0`-`2`                    | `1`           | Reroll option
 `rerollDelay`| `integer` in `ms`          | `255`         | Delay between nixies on reroll
 `functions`  | array of [`0`,`1`]         | `[1,1,1,1,1,0]`| Transition function for each nixie
+`rev`        | `1`, `2`                   | `2`           | Photos version, next build
 
 ## Todo
 
 - [ ] Color shift animations
 - [ ] Roll and Fade transitions
-- [ ] Roll right to left and even-numbered on minute change
+- [x] Roll right to left and even-numbered on minute change

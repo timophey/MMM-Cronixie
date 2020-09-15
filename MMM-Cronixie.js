@@ -11,6 +11,7 @@ Module.register("MMM-Cronixie", {
 		reroll: 1,
 		rerollDelay: 255,
 		functions: [1,1,1,1,1,0],
+		ver: 1,
 	},
 	values:   [0,0,0,0,0,0], // Current values
 	valuesTo: [0,0,0,0,0,0], // Current valuesTo

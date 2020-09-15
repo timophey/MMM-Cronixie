@@ -41,13 +41,24 @@
   background-position-x: calc(var(--wii) * 1.5);
 }
 
-.nixie[data-d="0"]{background-image: url(../img/0.JPG);}
-.nixie[data-d="1"]{background-image: url(../img/1.JPG);}
-.nixie[data-d="2"]{background-image: url(../img/2_.JPG);}
-.nixie[data-d="3"]{background-image: url(../img/3_.JPG);}
-.nixie[data-d="4"]{background-image: url(../img/4.JPG);}
-.nixie[data-d="5"]{background-image: url(../img/5.JPG);}
-.nixie[data-d="6"]{background-image: url(../img/6_.JPG);}
-.nixie[data-d="7"]{background-image: url(../img/7_.JPG);}
-.nixie[data-d="8"]{background-image: url(../img/8.JPG);}
-.nixie[data-d="9"]{background-image: url(../img/9.JPG);}
+.cronixie_body[data-ver="1"] .nixie[data-d="0"]{background-image: url(../img/0.JPG);}
+.cronixie_body[data-ver="1"] .nixie[data-d="1"]{background-image: url(../img/1.JPG);}
+.cronixie_body[data-ver="1"] .nixie[data-d="2"]{background-image: url(../img/2_.JPG);}
+.cronixie_body[data-ver="1"] .nixie[data-d="3"]{background-image: url(../img/3_.JPG);}
+.cronixie_body[data-ver="1"] .nixie[data-d="4"]{background-image: url(../img/4.JPG);}
+.cronixie_body[data-ver="1"] .nixie[data-d="5"]{background-image: url(../img/5.JPG);}
+.cronixie_body[data-ver="1"] .nixie[data-d="6"]{background-image: url(../img/6_.JPG);}
+.cronixie_body[data-ver="1"] .nixie[data-d="7"]{background-image: url(../img/7_.JPG);}
+.cronixie_body[data-ver="1"] .nixie[data-d="8"]{background-image: url(../img/8.JPG);}
+.cronixie_body[data-ver="1"] .nixie[data-d="9"]{background-image: url(../img/9.JPG);}
+
+.cronixie_body[data-ver="2"] .nixie[data-d="0"]{background-image: url(../img/2/0.JPG);}
+.cronixie_body[data-ver="2"] .nixie[data-d="1"]{background-image: url(../img/2/1.JPG);}
+.cronixie_body[data-ver="2"] .nixie[data-d="2"]{background-image: url(../img/2/2.JPG);}
+.cronixie_body[data-ver="2"] .nixie[data-d="3"]{background-image: url(../img/2/3.JPG);}
+.cronixie_body[data-ver="2"] .nixie[data-d="4"]{background-image: url(../img/2/4.JPG);}
+.cronixie_body[data-ver="2"] .nixie[data-d="5"]{background-image: url(../img/2/5.JPG);}
+.cronixie_body[data-ver="2"] .nixie[data-d="6"]{background-image: url(../img/2/6.JPG);}
+.cronixie_body[data-ver="2"] .nixie[data-d="7"]{background-image: url(../img/2/7.JPG);}
+.cronixie_body[data-ver="2"] .nixie[data-d="8"]{background-image: url(../img/2/8.JPG);}
+.cronixie_body[data-ver="2"] .nixie[data-d="9"]{background-image: url(../img/2/9.JPG);}
